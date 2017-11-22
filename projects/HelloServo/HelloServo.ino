@@ -1,42 +1,27 @@
-#include "CheapStepper.h"
+#include <Servo.h>
 
-
-CheapStepper stepper(8, 9, 10, 11);
-
-boolean moveClockwise = true;
+Servo servo;
 
 void setup()
 {
-  Serial.begin(9600);
-  Serial.println("Ready to start moving!");
+  // Attache le servomoteur à la broche D9
+  servo.attach(9);
 }
 
 void loop()
 {
-  for (int s=0; s<4096; s++)
-  {
-    // this will loop 4096 times
-    // 4096 steps = full rotation using default values
-    /* Note:
-     * you could alternatively use 4076 steps... 
-     * if you think your 28BYJ-48 stepper's internal gear ratio is 63.68395:1 (measured) rather than 64:1 (advertised)
-     * for more info, see: http://forum.arduino.cc/index.php?topic=71964.15)
-     */
-    
-    stepper.step(moveClockwise);
-
-    // now let's get the current step position of motor
-    int nStep = stepper.getStep();
-
-    // and if it's divisible by 64...    
-    if (nStep%64 == 0)
-    { 
-      Serial.print("current step position: "); Serial.print(nStep);
-      Serial.println();      
-    }
+  // Fait bouger le bras de 0° à 180°
+  for (int position = 0; position <= 180; position++) {
+    servo.write(position);
+    delay(15);
   }
-
-  delay(1000);  
-  moveClockwise = !moveClockwise;
+  
+  // Fait bouger le bras de 180° à 10°
+  for (int position = 180; position >= 0; position--) {
+    servo.write(position);
+    delay(15);
+  }
+  
+  servo.write(0);
+  delay(1500);
 }
-
