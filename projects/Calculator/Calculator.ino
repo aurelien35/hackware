@@ -192,10 +192,29 @@ int getUserAnswer(int questionLength)
 void loop()
 {
   // Pick numbers, build question and answer
-  int A               = random(5, 20);
-  int B               = random(5, 20);
-  int answer          = A + B;
-  String question     = String(A) + String(" + ") + String(B) + String(" = ?");
+  int A         = random(5, 21);
+  int B         = random(5, 21);
+  int operation = random(1, 3);
+
+  int answer = 0;
+  String question;
+  if (operation == 1)
+  {
+    answer = A + B;
+    question = String(A) + String(" + ") + String(B) + String(" = ?");
+  }
+  else
+  {
+    if (B > A)
+    {
+      int tmp = A;
+      A = B;
+      B = tmp;
+    }
+    answer = A - B;
+    question = String(A) + String(" - ") + String(B) + String(" = ?");
+  }
+  
   int questionLength  = question.length();
 
   // Display the question
