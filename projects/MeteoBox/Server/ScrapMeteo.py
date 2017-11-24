@@ -2,6 +2,34 @@
 
 from urllib2 import urlopen
 import bs4 as BeautifulSoup
+import json
+
+def cloudsStringToValue(cloudsString):
+	if (cloudsString == u"Éclaircies") :			return 1
+	elif (cloudsString == u"Pluies éparses") :		return 2
+	elif (cloudsString == u"Pluie") :				return 3
+	elif (cloudsString == u"Très nuageux") :		return 4
+	elif (cloudsString == u"Rares averses") :		return 5
+	elif (cloudsString == u"Averses") :				return 6
+	elif (cloudsString == u"Averses de neige") :	return 7
+	elif (cloudsString == u"Nuit claire") :			return 8
+	elif (cloudsString == u"Brume") :				return 9
+	elif (cloudsString == u"Ensoleillé") :			return 10
+	elif (cloudsString == u"Ciel voilé") :			return 11
+	elif (cloudsString == u"Averses orageuses") :	return 12
+	elif (cloudsString == u"Quelques flocons") :	return 13
+	elif (cloudsString == u"Neige") :				return 14
+	elif (cloudsString == u"Pluies orageuses") :	return 15
+	elif (cloudsString == u"Pluie et neige") :		return 16
+	elif (cloudsString == u"Pluie forte") :			return 17
+	return -1
+	
+def numberStringToValue(numberString):
+	try:
+		return int(numberString)
+	except ValueError:
+		return -1
+
 
 def extractForecast(content):
 	result = {}
@@ -14,10 +42,11 @@ def extractForecast(content):
 	
 def extractHourlyForecast(content, hourString):
 	result = {}
-	result["clouds"]			= ""
-	result["temperature"]		= ""
-	result["windSpeed"]			= ""
-	result["rainProbability"]	= ""
+	result["clouds"]			= -1
+	result["temperatureStart"]	= -1
+	result["temperatureEnd"]	= -1
+	result["windSpeed"]			= -1
+	result["rainProbability"]	= -1
 	
 	forecastsList = content.findAll("li", recursive=False)
 	# print "============="
@@ -28,70 +57,36 @@ def extractHourlyForecast(content, hourString):
 			if time is not None :
 				dayContent = forecast.find("div", attrs={"class":"content"})
 				if dayContent is not None :
-					clouds			= dayContent.find("li", attrs={"class":"day-summary-label"}).text.strip()
-					temperature		= dayContent.find("li", attrs={"class":"day-summary-tress-start"}).text.strip()
-					windSpeed		= dayContent.find("li", attrs={"class":"day-summary-wind"}).text.strip()
-					rainProbability	= dayContent.find("div", attrs={"class":"day-probabilities"}).div.ul.li.strong.text.strip()
+					temperatureStart	= dayContent.find("li", attrs={"class":"day-summary-tress-start"}).text.strip()
+					temperatureEnd		= dayContent.find("li", attrs={"class":"day-summary-tress-end"}).text.strip()
+					windSpeed			= dayContent.find("li", attrs={"class":"day-summary-wind"}).text.strip()
+					rainProbability		= dayContent.find("div", attrs={"class":"day-probabilities"}).div.ul.li.strong.text.strip()
+					clouds				= dayContent.find("li", attrs={"class":"day-summary-label"}).text.strip()
 					
-					temperature		= temperature.replace("Ressenti ", "").replace(u"°C", "")
-					windSpeed		= windSpeed.replace(" km/h", "")
-					rainProbability	= rainProbability.replace(" %", "")
-					
-					result["clouds"]			= clouds
-					result["temperature"]		= temperature
-					result["windSpeed"]			= windSpeed
-					result["rainProbability"]	= rainProbability
-					
-	# print "         clouds :", result["clouds"]
-	# print "    temperature :", result["temperature"]
-	# print "      windSpeed :", result["windSpeed"]
-	# print "rainProbability :", result["rainProbability"]
-	# print "============="
+					temperatureStart	= temperatureStart.replace("Ressenti ", "").replace(u"°C", "")
+					temperatureEnd		= temperatureEnd.replace("Ressenti ", "").replace(u"°C", "")
+					windSpeed			= windSpeed.replace(" km/h", "")
+					rainProbability		= rainProbability.replace(" %", "")
+
+					result["clouds"]			= cloudsStringToValue(clouds)
+					result["temperatureStart"]	= numberStringToValue(temperatureStart)
+					result["temperatureEnd"]	= numberStringToValue(temperatureEnd)
+					result["windSpeed"]			= numberStringToValue(windSpeed)
+					result["rainProbability"]	= numberStringToValue(rainProbability)
 	
 	return result
 
-def main():
-	html            = urlopen("http://www.meteofrance.com/previsions-meteo-france/rennes/35000").read()
-	soup            = BeautifulSoup.BeautifulSoup(html, "html.parser")
-	forecasts       = soup.find("div", attrs={"class":"prevision-ville"})
-	hourlyForecasts = forecasts.findAll("ul",attrs={"class":"prevision-horaire"}, limit=2, recursive=False)
+def scrapWeather(cityId):
+	html            		= urlopen("http://www.meteofrance.com/previsions-meteo-france/" + cityId).read()
+	soup            		= BeautifulSoup.BeautifulSoup(html, "html.parser")
+	forecastElements  	 	= soup.find("div", attrs={"class":"prevision-ville"})
+	hourlyForecastElements 	= forecastElements.findAll("ul",attrs={"class":"prevision-horaire"}, limit=2, recursive=False)
 
-	todayForecast		= extractForecast(hourlyForecasts[0])
-	tomorrowForecast	= extractForecast(hourlyForecasts[1])
-	
-	print "d0-7h-clouds:",todayForecast["7h"]["clouds"]
-	print "d0-7h-temperature:",todayForecast["7h"]["temperature"]
-	print "d0-7h-windSpeed:",todayForecast["7h"]["windSpeed"]
-	print "d0-7h-rainProbability:",todayForecast["7h"]["rainProbability"]
-	print "d0-10h-clouds:",todayForecast["10h"]["clouds"]
-	print "d0-10h-temperature:",todayForecast["10h"]["temperature"]
-	print "d0-10h-windSpeed:",todayForecast["10h"]["windSpeed"]
-	print "d0-10h-rainProbability:",todayForecast["10h"]["rainProbability"]
-	print "d0-13h-clouds:",todayForecast["13h"]["clouds"]
-	print "d0-13h-temperature:",todayForecast["13h"]["temperature"]
-	print "d0-13h-windSpeed:",todayForecast["13h"]["windSpeed"]
-	print "d0-13h-rainProbability:",todayForecast["13h"]["rainProbability"]
-	print "d0-16h-clouds:",todayForecast["16h"]["clouds"]
-	print "d0-16h-temperature:",todayForecast["16h"]["temperature"]
-	print "d0-16h-windSpeed:",todayForecast["16h"]["windSpeed"]
-	print "d0-16h-rainProbability:",todayForecast["16h"]["rainProbability"]
-
-	print "d1-7h-clouds:",tomorrowForecast["7h"]["clouds"]
-	print "d1-7h-temperature:",tomorrowForecast["7h"]["temperature"]
-	print "d1-7h-windSpeed:",tomorrowForecast["7h"]["windSpeed"]
-	print "d1-7h-rainProbability:",tomorrowForecast["7h"]["rainProbability"]
-	print "d1-10h-clouds:",tomorrowForecast["10h"]["clouds"]
-	print "d1-10h-temperature:",tomorrowForecast["10h"]["temperature"]
-	print "d1-10h-windSpeed:",tomorrowForecast["10h"]["windSpeed"]
-	print "d1-10h-rainProbability:",tomorrowForecast["10h"]["rainProbability"]
-	print "d1-13h-clouds:",tomorrowForecast["13h"]["clouds"]
-	print "d1-13h-temperature:",tomorrowForecast["13h"]["temperature"]
-	print "d1-13h-windSpeed:",tomorrowForecast["13h"]["windSpeed"]
-	print "d1-13h-rainProbability:",tomorrowForecast["13h"]["rainProbability"]
-	print "d1-16h-clouds:",tomorrowForecast["16h"]["clouds"]
-	print "d1-16h-temperature:",tomorrowForecast["16h"]["temperature"]
-	print "d1-16h-windSpeed:",tomorrowForecast["16h"]["windSpeed"]
-	print "d1-16h-rainProbability:",tomorrowForecast["16h"]["rainProbability"]
+	result				= {}
+	result["today"]		= extractForecast(hourlyForecastElements[0])
+	result["tomorrow"]	= extractForecast(hourlyForecastElements[1])
+	return result
 	
 if __name__ == "__main__":
-	main()
+	forecast = scrapWeather("rennes/35000")
+	print json.dumps(forecast, indent=4, sort_keys=True)
