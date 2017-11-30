@@ -1,0 +1,18 @@
+
+I2C :
+=====
+
+Monter la platine avec le MCP23017, les LED, les capteurs
+Lire les valeurs sur l'ESP32 et allumer les diodes
+Mesurer le courant
+Si inférieur à 500mA, monter un switch avec un 2N2222 et un BC327 ou voir même un BC337 directement
+
+
+ESP32 :
+=======
+
+Ecrire la boucle principale du code qui lit les entrées et écrit les sorties
+Faire une requête sur le serveur meteobox
+Créer une structure pour y stocker toutes les infos : capteur, led, meteo...
+Passer en mode veille et se réveiller avec un bouton, en conservant les infos
+Mesurer le courant

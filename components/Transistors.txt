@@ -1,0 +1,10 @@
+20×BC337 Bipolar (BJT) Transistor NPN 45V 800mA 100MHz 625mW Through Hole TO-92-3
+20×BC327 Bipolar (BJT) Transistor PNP 45V 800mA 100MHz 625mW Through Hole TO-92-3
+20×2N2222 Bipolar (BJT) Transistor NPN 40V 600mA 200MHz 625mW Through Hole TO-92-3
+20×2N2907 Bipolar (BJT) Transistor PNP 40V 600mA 200MHz 625mW Through Hole TO-92-3
+20×2N3904 Bipolar (BJT) Transistor NPN 40V 200mA 200MHz 625mW Through Hole TO-92-3
+20×2N3906 Bipolar (BJT) Transistor PNP 40V 200mA 200MHz 625mW Through Hole TO-92-3
+20×S8050 Bipolar (BJT) Transistor NPN 25V 0.5A 100MHz 1W Through Hole TO-92-3
+20×S8550 Bipolar (BJT) Transistor PNP 25V 0.5A 100MHz 1W Through Hole TO-92-3
+20×A1015 Bipolar (BJT) Transistor PNP 50V 150mA 80MHz 400mW Through Hole TO-92-3
+20×C1815 Bipolar (BJT) Transistor NPN 50V 150mA 80MHz 400mW Through Hole TO-92-3
