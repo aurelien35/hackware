@@ -117,8 +117,6 @@ void loop()
   }
   
   shutdown();
-  
-  /*
   Serial.print("Input = ");
   Serial.print(mcp.digitalRead(0));
   Serial.print(mcp.digitalRead(1));
