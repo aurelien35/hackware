@@ -1,36 +1,113 @@
 #include "IOBoard.h"
 
 IOBoard::IOBoard()
-	: _mcp					(0x20)
-	, _isConnected			(false)
-//	, _sensorValues			()
-	, _lastSensorPosition	(IOBoard::POSITION_UNKNOW)
+	: _mcp				(0x20)
+	, _isConnected		(false)
+	, _sensorValues		(0)
+	, _sensorPosition	(IOBoard::POSITION_UNKNOW)
 {
-	// TODO : init pin 13 ?
+}
+//
+bool IOBoard::startUp()
+{
+	Serial.println("IOBoard::startUp...");
 	
-	_sensorValues[POSITION_1] = false;
-	_sensorValues[POSITION_2] = false;
-	_sensorValues[POSITION_3] = false;
-	_sensorValues[POSITION_4] = false;
-	_sensorValues[POSITION_5] = false;
-	_sensorValues[POSITION_6] = false;
-	_sensorValues[POSITION_7] = false;
-	_sensorValues[POSITION_8] = false;
+	// Reset default values
+	_isConnected		= false;
+	_sensorValues		= 0;
+	_sensorPosition	= IOBoard::POSITION_UNKNOW;
+	
+	// Power on the board
+	digitalWrite(IOBoard::PIN_POWER_ON, HIGH);
+	delay(500);
+	
+	// Start I2C
+	Wire.begin(IOBoard::PIN_SDA, IOBoard::PIN_SCL);
+	delay(500);
+	
+	// Test connexion and configuration
+	if (_mcp.exists() == true)
+	{
+		if (_mcp.setMode(MCP23017::PORT_A, MCP23017::INPUT_MODE) == true)
+		{
+			if (_mcp.setMode(MCP23017::PORT_B, MCP23017::OUTPUT_MODE) == true)
+			{
+				_isConnected = true;
+				Serial.println("IOBoard::startUp : ok !");
+				return true;
+			}
+		}
+	}
+	
+	Serial.println("IOBoard::startUp : error !");
+	return false;
 }
-void IOBoard::startUp()
-{
-}
+//
 void IOBoard::shutDown()
 {
+	Serial.println("IOBoard::shutDown...");
+	digitalWrite(IOBoard::PIN_POWER_ON, LOW);
+	_isConnected = false;
+	Serial.println("IOBoard::shutDown : ok !");
 }
-void IOBoard::update()
+//
+bool IOBoard::update()
 {
+	_sensorValues = 0;
+	_sensorPosition = IOBoard::POSITION_UNKNOW;
+	
+	if (_isConnected == false)
+	{
+		Serial.println("IOBoard::update : Not connected");
+		_mcp.debugDump();
+		return false;
+	}
+
+	// Read sensors
+	int newSensorsValues = _mcp.getGPIO(MCP23017::PORT_A);
+	if (newSensorsValues < 0)
+	{
+		Serial.println("IOBoard::update : read values error");
+		_mcp.debugDump();
+		return false;
+	}
+	
+	// Write LEDS
+	if (_mcp.setGPIO(MCP23017::PORT_A, (uint8_t) newSensorsValues) == false)
+	{
+		Serial.println("IOBoard::update : write values error");
+		_mcp.debugDump();
+		return false;
+	}
+
+	// Store values	
+	_sensorValues = (uint8_t) newSensorsValues;
+	
+	if (bitRead(_sensorValues, IOBoard::POSITION_1) == true) _sensorPosition = IOBoard::POSITION_1;
+	else if (bitRead(_sensorValues, IOBoard::POSITION_2) == true) _sensorPosition = IOBoard::POSITION_2;
+	else if (bitRead(_sensorValues, IOBoard::POSITION_3) == true) _sensorPosition = IOBoard::POSITION_3;
+	else if (bitRead(_sensorValues, IOBoard::POSITION_4) == true) _sensorPosition = IOBoard::POSITION_4;
+	else if (bitRead(_sensorValues, IOBoard::POSITION_5) == true) _sensorPosition = IOBoard::POSITION_5;
+	else if (bitRead(_sensorValues, IOBoard::POSITION_6) == true) _sensorPosition = IOBoard::POSITION_6;
+	else if (bitRead(_sensorValues, IOBoard::POSITION_7) == true) _sensorPosition = IOBoard::POSITION_7;
+	else if (bitRead(_sensorValues, IOBoard::POSITION_8) == true) _sensorPosition = IOBoard::POSITION_8;
+	else _sensorPosition = IOBoard::POSITION_UNKNOW;
+	
+	Serial.print("IOBoard::update : values=");
+	Serial.print(_sensorValues, BIN);
+	Serial.print(" - position=");
+	Serial.print(_sensorPosition);
+	Serial.println("");
+		
+	return true;
 }
+//
 bool IOBoard::isConnected() const
 {
 	return _isConnected;
 }
-IOBoard::Position IOBoard::lastSensorPosition() const
+//
+IOBoard::Position IOBoard::sensorPosition() const
 {
-	return _lastSensorPosition;
+	return _sensorPosition;
 }

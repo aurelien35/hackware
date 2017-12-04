@@ -24,56 +24,56 @@
 class MCP23017
 {
 private:
-	uint8_t					_address;
-	
+    uint8_t                 _address;
+    
 public:
-	typedef enum
-	{
-		IODIR	= 0x00,
-		IPOL	= 0x02,
-		GPINTEN	= 0x04,
-		DEFVAL	= 0x06,
-		INTCON	= 0x08,
-		IOCON	= 0x0A,
-		GPPU	= 0x0C,
-		INTF	= 0x0D,
-		INTCAP	= 0x10,
-		GPIO	= 0x12,
-		OLAT	= 0x14
-	} Register;
-	
-	typedef enum
-	{
-		PORT_A	= 0,
-		PORT_B	= 1
-	} Port;
-	
-	typedef enum
-	{
-		Output					= 0,
-		Input					= 1,
-		Input_PullUp			= 2,
-		Input_Inverted			= 3,
-		Input_PullUp_Inverted	= 4
-	} PinMode;
+    typedef enum
+    {
+        IODIR   = 0x00,
+        IPOL    = 0x02,
+        GPINTEN = 0x04,
+        DEFVAL  = 0x06,
+        INTCON  = 0x08,
+        IOCON   = 0x0A,
+        GPPU    = 0x0C,
+        INTF    = 0x0D,
+        INTCAP  = 0x10,
+        GPIO    = 0x12,
+        OLAT    = 0x14
+    } Register;
+    
+    typedef enum
+    {
+        PORT_A  = 0,
+        PORT_B  = 1
+    } Port;
+    
+    typedef enum
+    {
+        OUTPUT_MODE                  = 0,
+        INPUT_MODE                   = 1,
+        INPUT_PULL_UP_MODE           = 2,
+        INPUT_INVERTED_MODE          = 3,
+        INPUT_PULL_UP_INVERTED_MODE  = 4
+    } PinMode;
 
 public:
-	MCP23017(uint8_t address);
+    MCP23017(uint8_t address);
 
-	uint8_t				address() const;
-	bool				exists() const;
-	bool				setMode(MCP23017::Port port, MCP23017::PinMode mode, uint8_t bit) const;
-	bool				setMode(MCP23017::Port port, MCP23017::PinMode mode) const;
-	int					getGPIO(MCP23017::Port port, uint8_t bit) const;									// Return 0 or 1
-	int					getGPIO(MCP23017::Port port) const;													// Return 0-255 (0 or 1 for each of the 8 bits)
-	bool				setGPIO(MCP23017::Port port, uint8_t bit, bool value) const;						// Set 0 or 1
-	bool				setGPIO(MCP23017::Port port, uint8_t value) const;									// Set 0-255 (0 or 1 for each of the 8 bits)
-	int					readRegister(MCP23017::Port port, MCP23017::Register reg) const;					// Read a given register from the MCP23017 device
-	bool				writeRegister(MCP23017::Port port, MCP23017::Register reg, uint8_t value) const;	// Write a given register to the MCP23017 device
-	void				debugDump() const;
-	
+    uint8_t             address() const;
+    bool                exists() const;
+    bool                setMode(MCP23017::Port port, MCP23017::PinMode mode, uint8_t bit) const;
+    bool                setMode(MCP23017::Port port, MCP23017::PinMode mode) const;
+    int                 getGPIO(MCP23017::Port port, uint8_t bit) const;                                    // Return 0 or 1
+    int                 getGPIO(MCP23017::Port port) const;                                                 // Return 0-255 (0 or 1 for each of the 8 bits)
+    bool                setGPIO(MCP23017::Port port, uint8_t bit, bool value) const;                        // Set 0 or 1
+    bool                setGPIO(MCP23017::Port port, uint8_t value) const;                                  // Set 0-255 (0 or 1 for each of the 8 bits)
+    int                 readRegister(MCP23017::Port port, MCP23017::Register reg) const;                    // Read a given register from the MCP23017 device
+    bool                writeRegister(MCP23017::Port port, MCP23017::Register reg, uint8_t value) const;    // Write a given register to the MCP23017 device
+    void                debugDump() const;
+    
 protected:
-	void				dumpValue(const char* name, uint8_t addr, uint8_t v1, uint8_t v2) const;
+    void                dumpValue(const char* name, uint8_t addr, uint8_t v1, uint8_t v2) const;
 };
 
 #endif

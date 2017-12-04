@@ -2,11 +2,19 @@
 #define METEOBOX_IOBOARD_H
 
 #include <Wire.h>
+#include <Arduino.h>
 #include "MCP23017.h"
 
 class IOBoard
 {
 public:
+	typedef enum
+	{
+		PIN_POWER_ON  = 13,
+		PIN_SDA		  = 21,
+		PIN_SCL		  = 22
+	} Pin;
+	
 	typedef enum
 	{
 		POSITION_UNKNOW  = -1,
@@ -24,18 +32,18 @@ public:
 private:
 	MCP23017				_mcp;
 	bool					_isConnected;
-	bool					_sensorValues[IOBoard::POSITION_COUNT];
-	IOBoard::Position		_lastSensorPosition;
+	uint8_t					_sensorValues;
+	IOBoard::Position		_sensorPosition;
 	
 public:
 	IOBoard();
 	
-	void					startUp();
+	bool					startUp();
 	void					shutDown();
 	
-	void					update();
+	bool					update();
 	bool					isConnected() const;
-	IOBoard::Position		lastSensorPosition() const;
+	IOBoard::Position		sensorPosition() const;
 };
 
 #endif
