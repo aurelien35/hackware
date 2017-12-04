@@ -1,8 +1,7 @@
 #include <Wire.h>
 #include <esp_deep_sleep.h>
 #include "IOBoard.h"
-
-IOBoard ioBoard;
+#include "WeatherData.h"
 
 void setup()
 {
@@ -14,31 +13,58 @@ void setup()
 	Serial.begin(9600);
 	while (!Serial);
 	Serial.println("Serial comunication started");
-	
-	// Start IOBoard
-	ioBoard.startUp();
 }
 
-void shutDown()
+void loop()
 {
-	Serial.println("Shutdown...");
+	Serial.println("MeteoBox started");
+
+	IOBoard ioBoard;
+	WeatherData weatherData;
+	IOBoard::Position currentPosition = IOBoard::POSITION_UNKNOW;
+
+	unsigned long currentTime	= millis();
+	unsigned long stopTime		= currentTime + 60000;
+
+	while (currentTime < stopTime)	// in case of overflow, no loop :-)
+	{
+		// Start IOBoard
+		if (ioBoard.isConnected() == false)
+		{
+			ioBoard.startUp();
+			delay(1000);
+		}
+
+		// Download data
+		if (weatherData.isValid() == false)
+		{
+			weatherData.download();
+			delay(1000);
+		}
+
+		// Display data
+		if (   (ioBoard.isConnected() == true)
+			&& (weatherData.isValid() == true)
+			&& (ioBoard.update() == true)
+			&& (currentPosition != ioBoard.sensorPosition()) )
+		{
+			currentPosition = ioBoard.sensorPosition();
+
+			// TODO : display data
+			
+			delay(100);
+			stopTime = currentTime + 60000;
+		}
+
+		currentTime	= millis();
+	}
   
 	// Stop IOBoard
 	ioBoard.shutDown();
 	
 	// Stop ESP32
+	Serial.println("Shutdown...");
 	esp_deep_sleep_start();
-}
-
-void loop()
-{
-	for (int i=0; i<200; i++)
-	{
-		ioBoard.update();
-		delay(100);
-	}
-  
-	shutDown();
 }
 
 
