@@ -1,1 +1,30 @@
- 
+Carte I2C :
+===========
+
+	Entrées : 
+	*********
+		- +5V
+		- GND
+		- SDA
+		- SCL
+		- POWER ON
+		- 8 x SENSOR
+
+	Sorties : 
+	*********
+		- +5V (sensors, switch)
+		- +5V (power led, switch)
+		- GND (sensors)
+		- GND (power led)
+		- GND (leds)
+		- 8 x LED
+		
+		
+Carte power :
+=============
+
+	Sorties : 
+	*********
+		- +3.3V (bouton wakeup, permanent)
+		- GND (bouton wakeup)
+		- WAKEUP

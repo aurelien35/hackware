@@ -132,20 +132,31 @@ bool MCP23017::setMode(MCP23017::Port port, MCP23017::PinMode mode, uint8_t bit)
     // We write the mode only if it's changed
     if (newMode != chipMode)
     {
-        writeRegister(port, MCP23017::IODIR, newMode);
+        if (writeRegister(port, MCP23017::IODIR, newMode) == false)
+        {
+            return false;
+        }
     }
     
     // If we read a pullup value, then write it no matter what
     if (pullup >= 0)
     {
-        writeRegister(port, MCP23017::GPPU, pullup);
+        if (writeRegister(port, MCP23017::GPPU, pullup) == false)
+        {
+            return false;
+        }
     }
     
     // If we read a polarity value, then write it no matter what
     if (polarity >= 0)
     {
-        writeRegister(port, MCP23017::IPOL, pullup);
+        if (writeRegister(port, MCP23017::IPOL, pullup) == false)
+        {
+            return false;
+        }
     }
+
+    return true;
 }
 //
 bool MCP23017::setMode(MCP23017::Port port, MCP23017::PinMode mode) const
