@@ -4,3 +4,5 @@
 /projects/*/*/Release
 /projects/*/*/*.*.suo
 /projects/*/*/*.vcxproj.*
+/projects/*/*/*.opensdf
+/projects/*/*/*.sdf

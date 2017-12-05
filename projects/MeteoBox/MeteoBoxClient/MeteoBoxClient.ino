@@ -1,12 +1,15 @@
-#include <Wire.h>
-#include <esp_deep_sleep.h>
+#include "MeteoBoxClient.h"
 #include "IOBoard.h"
+#include "DisplayBoard.h"
 #include "WeatherData.h"
 
 void setup()
 {
 	// Configure pins
-	pinMode(IOBoard::PIN_POWER_ON, OUTPUT);
+	pinMode(MeteoBoxClient::PIN_IO_BOARD_POWER_ON,		OUTPUT);
+	pinMode(MeteoBoxClient::PIN_DISPLAY_BOARD_POWER_ON,	OUTPUT);
+	pinMode(MeteoBoxClient::PIN_WIFI_STATUS,			OUTPUT);
+	pinMode(MeteoBoxClient::PIN_DATA_STATUS,			OUTPUT);
 	esp_deep_sleep_enable_ext0_wakeup(GPIO_NUM_33, 1);
 
 	// Start serial
@@ -20,8 +23,9 @@ void loop()
 	Serial.println("MeteoBox started");
 
 	IOBoard ioBoard;
+	DisplayBoard displayBoard;
 	WeatherData weatherData;
-	IOBoard::Position currentPosition = IOBoard::POSITION_UNKNOW;
+	MeteoBoxClient::Position currentPosition = MeteoBoxClient::POSITION_UNKNOW;
 
 	unsigned long currentTime	= millis();
 	unsigned long stopTime		= currentTime + 60000;
