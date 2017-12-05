@@ -1,6 +1,4 @@
 #include "WeatherData.h"
-#include <WiFi.h>
-#include <HTTPClient.h>
 
 WeatherData::Entry::Entry()
 	: clouds			(-1)
@@ -66,7 +64,7 @@ bool WeatherData::connectWifi()
     while (   (WiFi.status() != WL_CONNECTED)
 		   && (tryLimit > 0) )
     {
-		digitalWrite(WeatherData::PIN_WIFI_STATUS, statusLed);
+		digitalWrite(MeteoBoxClient::PIN_WIFI_STATUS, statusLed);
         Serial.print(".");
 
 		statusLed = (statusLed==HIGH)?LOW:HIGH;
@@ -78,9 +76,11 @@ bool WeatherData::connectWifi()
 
 	if (WiFi.status() == WL_CONNECTED)
 	{
+		digitalWrite(MeteoBoxClient::PIN_WIFI_STATUS, HIGH);
 		return true;
 	}
 
+	digitalWrite(MeteoBoxClient::PIN_WIFI_STATUS, LOW);
 	return false;
 }
 //
@@ -118,38 +118,72 @@ bool WeatherData::downloadData()
 //
 bool WeatherData::parseData()
 {
-	DynamicJsonBuffer jsonBuffer(JSON_OBJECT_SIZE(2) + 2*JSON_OBJECT_SIZE(4) + 8*JSON_OBJECT_SIZE(5) + 740);
+	StaticJsonBuffer<JSON_OBJECT_SIZE(2) + 2*JSON_OBJECT_SIZE(4) + 8*JSON_OBJECT_SIZE(5) + 1000> jsonBuffer;
   
 	JsonObject& root = jsonBuffer.parseObject(_serverResponse.c_str()); 
   
-	if (root.success() == true)
+	if (   (root.success() == true)
+		&& (root.containsKey("today") == true)
+		&& (root.containsKey("tomorrow") == true) )
 	{
 		const JsonObject& today		= root["today"];
 		const JsonObject& tomorrow	= root["tomorrow"];
 
-		parseEntry(today["7h"],		IOBoard::POSITION_1);
-		parseEntry(today["10h"],	IOBoard::POSITION_2);
-		parseEntry(today["13h"],	IOBoard::POSITION_3);
-		parseEntry(today["16h"],	IOBoard::POSITION_4);
-
-		parseEntry(tomorrow["7h"],	IOBoard::POSITION_5);
-		parseEntry(tomorrow["10h"],	IOBoard::POSITION_6);
-		parseEntry(tomorrow["13h"],	IOBoard::POSITION_7);
-		parseEntry(tomorrow["16h"],	IOBoard::POSITION_8);
-
-		return true;
+		if (   (today.containsKey("7h") == true)
+			&& (today.containsKey("10h") == true)
+			&& (today.containsKey("13h") == true)
+			&& (today.containsKey("16h") == true)
+			&& (tomorrow.containsKey("7h") == true)
+			&& (tomorrow.containsKey("10h") == true)
+			&& (tomorrow.containsKey("13h") == true)
+			&& (tomorrow.containsKey("16h") == true) )
+		{
+			if (   (parseEntry(today["7h"],		MeteoBoxClient::POSITION_1) == true)
+				&& (parseEntry(today["10h"],	MeteoBoxClient::POSITION_2) == true)
+				&& (parseEntry(today["13h"],	MeteoBoxClient::POSITION_3) == true)
+				&& (parseEntry(today["16h"],	MeteoBoxClient::POSITION_4) == true)
+				&& (parseEntry(tomorrow["7h"],	MeteoBoxClient::POSITION_5) == true)
+				&& (parseEntry(tomorrow["10h"],	MeteoBoxClient::POSITION_6) == true)
+				&& (parseEntry(tomorrow["13h"],	MeteoBoxClient::POSITION_7) == true)
+				&& (parseEntry(tomorrow["16h"],	MeteoBoxClient::POSITION_8) == true) )
+			{
+				return true;
+			}
+		}
 	}
 
+	Serial.println("WeatherData::parseData : parseError");
+	Serial.println("======= Response =======");
+	Serial.println(_serverResponse.c_str());
+	Serial.println("======================");
+			
 	return false;
 }
 //
-void WeatherData::parseEntry(const JsonObject& data, IOBoard::Position position)
+bool WeatherData::parseEntry(const JsonObject& data, MeteoBoxClient::Position position)
 {
-	_entries[position].clouds			= data["clouds"];
-	_entries[position].rainProbability	= data["rainProbability"];
-	_entries[position].temperatureEnd	= data["temperatureEnd"];
-	_entries[position].temperatureStart	= data["temperatureStart"];
-	_entries[position].windSpeed		= data["windSpeed"];
+	if (   (data.is<JsonObject&>() == true)
+		&& (data.containsKey("clouds") == true)
+		&& (data.containsKey("rainProbability") == true)
+		&& (data.containsKey("temperatureEnd") == true)
+		&& (data.containsKey("temperatureStart") == true)
+		&& (data.containsKey("windSpeed") == true)
+		&& (data["clouds"].is<int>() == true)
+		&& (data["rainProbability"].is<int>() == true)
+		&& (data["temperatureEnd"].is<int>() == true)
+		&& (data["temperatureStart"].is<int>() == true)
+		&& (data["windSpeed"].is<int>() == true) )
+	{
+		_entries[position].clouds			= data["clouds"];
+		_entries[position].rainProbability	= data["rainProbability"];
+		_entries[position].temperatureEnd	= data["temperatureEnd"];
+		_entries[position].temperatureStart	= data["temperatureStart"];
+		_entries[position].windSpeed		= data["windSpeed"];
+		
+		return true;
+	}
+	
+	return false;
 }
 //
 bool WeatherData::isValid() const
@@ -157,7 +191,7 @@ bool WeatherData::isValid() const
 	return _isValid;
 }
 //
-const WeatherData::Entry& WeatherData::entry(IOBoard::Position position) const
+const WeatherData::Entry& WeatherData::entry(MeteoBoxClient::Position position) const
 {
 	return _entries[position];
 }

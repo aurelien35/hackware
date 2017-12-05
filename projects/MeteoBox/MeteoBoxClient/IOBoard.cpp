@@ -4,7 +4,7 @@ IOBoard::IOBoard()
 	: _mcp				(0x20)
 	, _isConnected		(false)
 	, _sensorValues		(0)
-	, _sensorPosition	(IOBoard::POSITION_UNKNOW)
+	, _sensorPosition	(MeteoBoxClient::POSITION_UNKNOW)
 {
 }
 //
@@ -13,16 +13,16 @@ bool IOBoard::startUp()
 	Serial.println("IOBoard::startUp...");
 	
 	// Reset default values
-	_isConnected		= false;
-	_sensorValues		= 0;
-	_sensorPosition	= IOBoard::POSITION_UNKNOW;
+	_isConnected	= false;
+	_sensorValues	= 0;
+	_sensorPosition	= MeteoBoxClient::POSITION_UNKNOW;
 	
 	// Power on the board
-	digitalWrite(IOBoard::PIN_POWER_ON, HIGH);
+	digitalWrite(MeteoBoxClient::PIN_IO_BOARD_POWER_ON, HIGH);
 	delay(500);
 	
 	// Start I2C
-	Wire.begin(IOBoard::PIN_SDA, IOBoard::PIN_SCL);
+	Wire.begin(/*MeteoBoxClient::PIN_SDA, MeteoBoxClient::PIN_SCL*/);
 	delay(500);
 	
 	// Test connexion and configuration
@@ -46,7 +46,7 @@ bool IOBoard::startUp()
 void IOBoard::shutDown()
 {
 	Serial.println("IOBoard::shutDown...");
-	digitalWrite(IOBoard::PIN_POWER_ON, LOW);
+	digitalWrite(MeteoBoxClient::PIN_IO_BOARD_POWER_ON, LOW);
 	_isConnected = false;
 	Serial.println("IOBoard::shutDown : ok !");
 }
@@ -54,7 +54,7 @@ void IOBoard::shutDown()
 bool IOBoard::update()
 {
 	_sensorValues = 0;
-	_sensorPosition = IOBoard::POSITION_UNKNOW;
+	_sensorPosition = MeteoBoxClient::POSITION_UNKNOW;
 	
 	if (_isConnected == false)
 	{
@@ -83,15 +83,15 @@ bool IOBoard::update()
 	// Store values	
 	_sensorValues = (uint8_t) newSensorsValues;
 	
-	if (bitRead(_sensorValues, IOBoard::POSITION_1) == true) _sensorPosition = IOBoard::POSITION_1;
-	else if (bitRead(_sensorValues, IOBoard::POSITION_2) == true) _sensorPosition = IOBoard::POSITION_2;
-	else if (bitRead(_sensorValues, IOBoard::POSITION_3) == true) _sensorPosition = IOBoard::POSITION_3;
-	else if (bitRead(_sensorValues, IOBoard::POSITION_4) == true) _sensorPosition = IOBoard::POSITION_4;
-	else if (bitRead(_sensorValues, IOBoard::POSITION_5) == true) _sensorPosition = IOBoard::POSITION_5;
-	else if (bitRead(_sensorValues, IOBoard::POSITION_6) == true) _sensorPosition = IOBoard::POSITION_6;
-	else if (bitRead(_sensorValues, IOBoard::POSITION_7) == true) _sensorPosition = IOBoard::POSITION_7;
-	else if (bitRead(_sensorValues, IOBoard::POSITION_8) == true) _sensorPosition = IOBoard::POSITION_8;
-	else _sensorPosition = IOBoard::POSITION_UNKNOW;
+	if (bitRead(_sensorValues, MeteoBoxClient::POSITION_1) == true) _sensorPosition = MeteoBoxClient::POSITION_1;
+	else if (bitRead(_sensorValues, MeteoBoxClient::POSITION_2) == true) _sensorPosition = MeteoBoxClient::POSITION_2;
+	else if (bitRead(_sensorValues, MeteoBoxClient::POSITION_3) == true) _sensorPosition = MeteoBoxClient::POSITION_3;
+	else if (bitRead(_sensorValues, MeteoBoxClient::POSITION_4) == true) _sensorPosition = MeteoBoxClient::POSITION_4;
+	else if (bitRead(_sensorValues, MeteoBoxClient::POSITION_5) == true) _sensorPosition = MeteoBoxClient::POSITION_5;
+	else if (bitRead(_sensorValues, MeteoBoxClient::POSITION_6) == true) _sensorPosition = MeteoBoxClient::POSITION_6;
+	else if (bitRead(_sensorValues, MeteoBoxClient::POSITION_7) == true) _sensorPosition = MeteoBoxClient::POSITION_7;
+	else if (bitRead(_sensorValues, MeteoBoxClient::POSITION_8) == true) _sensorPosition = MeteoBoxClient::POSITION_8;
+	else _sensorPosition = MeteoBoxClient::POSITION_UNKNOW;
 	
 	Serial.print("IOBoard::update : values=");
 	Serial.print(_sensorValues, BIN);
@@ -107,7 +107,7 @@ bool IOBoard::isConnected() const
 	return _isConnected;
 }
 //
-IOBoard::Position IOBoard::sensorPosition() const
+MeteoBoxClient::Position IOBoard::sensorPosition() const
 {
 	return _sensorPosition;
 }

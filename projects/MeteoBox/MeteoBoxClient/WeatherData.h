@@ -1,17 +1,11 @@
 #ifndef METEOBOX_WEATHERDATA_H
 #define METEOBOX_WEATHERDATA_H
 
-#include "IOBoard.h"
-#include <ArduinoJson.h>
+#include "MeteoBoxClient.h"
 
 class WeatherData
 {
 public:
-	typedef enum
-	{
-		PIN_WIFI_STATUS  = 14
-	} Pin;
-
 	struct Entry
 	{
 		int clouds;
@@ -24,22 +18,22 @@ public:
 	};
 	
 private:
-	bool					_isValid;
-	String					_serverResponse;
-	WeatherData::Entry		_entries[IOBoard::POSITION_COUNT];
+	bool						_isValid;
+	String						_serverResponse;
+	WeatherData::Entry			_entries[MeteoBoxClient::POSITION_COUNT];
 	
 public:
 	WeatherData();
 	
 	bool						download();
 	bool						isValid() const;
-	const WeatherData::Entry&	entry(IOBoard::Position position) const;
+	const WeatherData::Entry&	entry(MeteoBoxClient::Position position) const;
 
 protected:
 	bool						connectWifi();
 	bool						downloadData();
 	bool						parseData();
-	void						parseEntry(const JsonObject& data, IOBoard::Position position);
+	bool						parseEntry(const JsonObject& data, MeteoBoxClient::Position position);
 };
 
 #endif
