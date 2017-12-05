@@ -84,16 +84,19 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DisplayBoard.h" />
     <ClInclude Include="IOBoard.h">
       <FileType>CppCode</FileType>
     </ClInclude>
     <ClInclude Include="MCP23017.h">
       <FileType>CppCode</FileType>
     </ClInclude>
+    <ClInclude Include="MeteoBoxClient.h" />
     <ClInclude Include="WeatherData.h" />
     <ClInclude Include="__vm\.MeteoBoxClient.vsarduino.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DisplayBoard.cpp" />
     <ClCompile Include="IOBoard.cpp" />
     <ClCompile Include="MCP23017.cpp" />
     <ClCompile Include="WeatherData.cpp" />
