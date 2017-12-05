@@ -22,7 +22,7 @@ bool IOBoard::startUp()
 	delay(500);
 	
 	// Start I2C
-	Wire.begin(/*MeteoBoxClient::PIN_SDA, MeteoBoxClient::PIN_SCL*/);
+	Wire.begin(MeteoBoxClient::PIN_SDA, MeteoBoxClient::PIN_SCL);
 	delay(500);
 	
 	// Test connexion and configuration

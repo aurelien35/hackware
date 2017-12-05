@@ -162,8 +162,8 @@ bool WeatherData::parseData()
 //
 bool WeatherData::parseEntry(const JsonObject& data, MeteoBoxClient::Position position)
 {
-	if (   (data.is<JsonObject&>() == true)
-		&& (data.containsKey("clouds") == true)
+	if (   /*(data.is<JsonObject&>() == true)
+		&& */(data.containsKey("clouds") == true)
 		&& (data.containsKey("rainProbability") == true)
 		&& (data.containsKey("temperatureEnd") == true)
 		&& (data.containsKey("temperatureStart") == true)
