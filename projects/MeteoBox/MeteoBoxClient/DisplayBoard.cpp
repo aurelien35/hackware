@@ -1,40 +1,37 @@
 #include "DisplayBoard.h"
 
 DisplayBoard::DisplayBoard()
-	: _isConnected		(false)
 {
-}
-//
-bool DisplayBoard::startUp()
-{
-	Serial.println("DisplayBoard::startUp...");
-	
-	// Reset default values
-	_isConnected = false;
-	
-	// Power on the board
-	digitalWrite(MeteoBoxClient::PIN_DISPLAY_BOARD_POWER_ON, HIGH);
-	delay(500);
-	
-	_isConnected = true;
-	Serial.println("DisplayBoard::startUp : ok !");
-	return true;
 }
 //
 void DisplayBoard::shutDown()
 {
 	Serial.println("DisplayBoard::shutDown...");
+
+	// Power on the board
+	digitalWrite(MeteoBoxClient::PIN_DISPLAY_BOARD_POWER_ON, HIGH);
+	delay(100);
+
+	// TODO : display invalid data
+
+	// Power off the board
 	digitalWrite(MeteoBoxClient::PIN_DISPLAY_BOARD_POWER_ON, LOW);
-	_isConnected = false;
+	delay(100);
+
 	Serial.println("DisplayBoard::shutDown : ok !");
 }
 //
-bool DisplayBoard::isConnected() const
+bool DisplayBoard::displayData(const WeatherData::Entry& entry)
 {
-	return _isConnected;
-}
-//
-bool DisplayBoard::update()
-{
+	// Power on the board
+	digitalWrite(MeteoBoxClient::PIN_DISPLAY_BOARD_POWER_ON, HIGH);
+	delay(100);
+
+	// TODO : display data
+
+	// Power off the board
+	digitalWrite(MeteoBoxClient::PIN_DISPLAY_BOARD_POWER_ON, LOW);
+	delay(100);
+
 	return false;
 }

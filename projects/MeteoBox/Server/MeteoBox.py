@@ -1,44 +1,48 @@
 # -*- coding: utf-8 -*-
-
-# Ensoleillé                    #   Soleil                    #   Rien
-# Éclaircies                    #   Soleil + nuages           #   Rien
-# Très nuageux                  #   Nuages                    #   Rien
-# Brume                         #   Soleil + brume            #   Rien
-# Pluie                         #   Soleil + nuages           #   Pluie
-# Averses                       #   Soleil + nuages           #   Pluie
-# Rares averses                 #   Soleil + nuages           #   Petite pluie
-# Pluies éparses                #   Soleil + nuages           #   Petite pluie
-# Pluie forte                   #   Soleil + nuages + pluie   #   Pluie
-# Averses de neige              #   Soleil + nuages           #   Flocons
-# Averses orageuses             #   Soleil + nuages           #   Pluie et orage
-# Quelques flocons              #   Soleil                    #   Flocons
-# Neige                         #   Soleil + nuages           #   Flocons
-# Pluies orageuses              #   Soleil + nuages + pluie   #   Pluie et orage
-# Pluie et neige                #   Soleil + nuages + pluie   #   Flocons
-# Bancs de brouillard           #   Brume                     #   Rien
-# Brouillard givrant            #   Brume                     #   Verglas
-# Pluie verglaçante             #   Soleil + nuages + pluie   #   Verglas
-# Ciel voilé                    #   Soleil + brume            #   Rien
-# Nuit claire                   #   Soleil                    #   Rien
-
-
-#   Soleil                    
-#   Soleil + nuages           
-#   Nuages                    
-#   Soleil + brume            
-#   Soleil + nuages + pluie   
-
-#   Rien
-#   Pluie
-#   Petite pluie
-#   Flocons
-#   Pluie et orage
-#   Verglas
-
-from urllib2 import urlopen
-import bs4 as BeautifulSoup
+import pprint
+import urllib.parse
+import urllib.request
 import json
+import bs4
 
+# Global objects
+PrettyPrinter = pprint.PrettyPrinter(indent=4)
+
+# Main application : call the requested application if available
+def application(env, start_response):
+	parsedUrl = urllib.parse.urlparse(env["REQUEST_URI"])
+	parsedQuery = urllib.parse.parse_qs(parsedUrl.query)
+	
+	# print("=================")
+	# PrettyPrinter.pprint(env)
+	# PrettyPrinter.pprint(parsedUrl)
+	# PrettyPrinter.pprint(parsedQuery)
+	# print("=================")
+
+	if ( (parsedUrl.path == '/meteobox') and ('cityId' in parsedQuery) and (len(parsedQuery['cityId']) == 1) ):
+		cityId = parsedQuery['cityId'][0]
+		weather = scrapWeather(cityId)
+		response = json.dumps(weather).encode('utf-8')
+		# PrettyPrinter.pprint(weather)
+		# print(response)
+		start_response('200 OK', [('Content-Type','text/json')])
+		return [response]
+	
+	start_response('444 No Response', [])
+	return []
+
+def scrapWeather(cityId):
+	html            		= urllib.request.urlopen("http://www.meteofrance.com/previsions-meteo-france/" + cityId).read()
+	soup            		= bs4.BeautifulSoup(html, "html.parser")
+	forecastElements  	 	= soup.find("div", attrs={"class":"prevision-ville"})
+	hourlyForecastElements 	= forecastElements.findAll("ul",attrs={"class":"prevision-horaire"}, limit=2, recursive=False)
+
+	result				= {}
+	result["today"]		= extractForecast(hourlyForecastElements[0])
+	result["tomorrow"]	= extractForecast(hourlyForecastElements[1])
+	return result
+
+	
 def cloudsStringToValue(cloudsString):
 	if (cloudsString == u"Ensoleillé"):				return 1
 	elif (cloudsString == u"Éclaircies"):			return 2
@@ -68,7 +72,6 @@ def numberStringToValue(numberString):
 	except ValueError:
 		return -1
 
-
 def extractForecast(content):
 	result = {}
 	result["7h"]	= extractHourlyForecast(content, "7h")
@@ -87,8 +90,6 @@ def extractHourlyForecast(content, hourString):
 	result["rainProbability"]	= -1
 	
 	forecastsList = content.findAll("li", recursive=False)
-	# print "============="
-	# print hourString
 	for forecast in forecastsList :
 		if "tomorrow" not in forecast["class"] :
 			time = forecast.find("time", attrs={"datetime":hourString})
@@ -115,18 +116,3 @@ def extractHourlyForecast(content, hourString):
 					result["rainProbability"]	= numberStringToValue(rainProbability)
 	
 	return result
-
-def scrapWeather(cityId):
-	html            		= urlopen("http://www.meteofrance.com/previsions-meteo-france/" + cityId).read()
-	soup            		= BeautifulSoup.BeautifulSoup(html, "html.parser")
-	forecastElements  	 	= soup.find("div", attrs={"class":"prevision-ville"})
-	hourlyForecastElements 	= forecastElements.findAll("ul",attrs={"class":"prevision-horaire"}, limit=2, recursive=False)
-
-	result				= {}
-	result["today"]		= extractForecast(hourlyForecastElements[0])
-	result["tomorrow"]	= extractForecast(hourlyForecastElements[1])
-	return result
-	
-if __name__ == "__main__":
-	forecast = scrapWeather("rennes/35000")
-	print json.dumps(forecast, indent=4, sort_keys=True)

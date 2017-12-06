@@ -86,10 +86,12 @@ bool WeatherData::connectWifi()
 //
 bool WeatherData::downloadData()
 {
+	digitalWrite(MeteoBoxClient::PIN_DATA_STATUS, LOW);
+
 	bool result = false;
 	HTTPClient client; 
   
-	if (client.begin("http://echo.jsontest.com/key/value/one/two") == false)
+	if (client.begin("http://www.hackware.radiopochard.com:4016/meteobox?cityId=rennes/35000") == false)
 	{
 		Serial.println("WeatherData::downloadData : client connection failed");
 	}
@@ -113,6 +115,7 @@ bool WeatherData::downloadData()
 	}
 
 	client.end();
+	digitalWrite(MeteoBoxClient::PIN_DATA_STATUS, (result==true)?HIGH:LOW);
 	return result;
 }
 //
@@ -162,8 +165,7 @@ bool WeatherData::parseData()
 //
 bool WeatherData::parseEntry(const JsonObject& data, MeteoBoxClient::Position position)
 {
-	if (   /*(data.is<JsonObject&>() == true)
-		&& */(data.containsKey("clouds") == true)
+	if (   (data.containsKey("clouds") == true)
 		&& (data.containsKey("rainProbability") == true)
 		&& (data.containsKey("temperatureEnd") == true)
 		&& (data.containsKey("temperatureStart") == true)

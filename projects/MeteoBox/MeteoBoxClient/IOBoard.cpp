@@ -46,8 +46,11 @@ bool IOBoard::startUp()
 void IOBoard::shutDown()
 {
 	Serial.println("IOBoard::shutDown...");
+
 	digitalWrite(MeteoBoxClient::PIN_IO_BOARD_POWER_ON, LOW);
+	delay(500);
 	_isConnected = false;
+
 	Serial.println("IOBoard::shutDown : ok !");
 }
 //

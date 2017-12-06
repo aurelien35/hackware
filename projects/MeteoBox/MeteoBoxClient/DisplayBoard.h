@@ -2,20 +2,15 @@
 #define METEOBOX_DISPLAYBOARD_H
 
 #include "MeteoBoxClient.h"
+#include "WeatherData.h"
 
 class DisplayBoard
 {
-private:
-	bool					_isConnected;
-	
 public:
 	DisplayBoard();
 	
-	bool					startUp();
 	void					shutDown();
-	
-	bool					isConnected() const;
-	bool					update();
+	bool					displayData(const WeatherData::Entry& entry);
 };
 
 #endif

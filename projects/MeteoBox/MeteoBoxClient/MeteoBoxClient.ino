@@ -12,6 +12,12 @@ void setup()
 	pinMode(MeteoBoxClient::PIN_DATA_STATUS,			OUTPUT);
 	esp_deep_sleep_enable_ext0_wakeup(GPIO_NUM_33, 1);
 
+	// Write default values
+	digitalWrite(MeteoBoxClient::PIN_IO_BOARD_POWER_ON,			LOW);
+	digitalWrite(MeteoBoxClient::PIN_DISPLAY_BOARD_POWER_ON,	LOW);
+	digitalWrite(MeteoBoxClient::PIN_WIFI_STATUS,				LOW);
+	digitalWrite(MeteoBoxClient::PIN_DATA_STATUS,				LOW);
+
 	// Start serial
 	Serial.begin(9600);
 	while (!Serial);
@@ -54,17 +60,21 @@ void loop()
 		{
 			currentPosition = ioBoard.sensorPosition();
 
-			// TODO : display data
-			
-			delay(100);
+			displayBoard.displayData(weatherData.entry(currentPosition));
+
+			// Extend time before sleep
 			stopTime = currentTime + 60000;
 		}
 
+		delay(100);
 		currentTime	= millis();
 	}
   
 	// Stop IOBoard
 	ioBoard.shutDown();
+
+	// Stop DisplayBoard
+	displayBoard.shutDown();
 	
 	// Stop ESP32
 	Serial.println("Shutdown...");
