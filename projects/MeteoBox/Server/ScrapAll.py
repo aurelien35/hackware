@@ -22,13 +22,14 @@
 # Pluie verglaçante             #   Soleil + nuages + pluie   #   Verglas
 # Ciel voilé                    #   Soleil + brume            #   Rien
 # Nuit claire                   #   Soleil                    #   Rien
-
+# Risque de grêle				#   Soleil + nuages + grêle   #   Pluie
 
 #   Soleil                    
 #   Soleil + nuages           
 #   Nuages                    
 #   Soleil + brume            
 #   Soleil + nuages + pluie   
+#   Soleil + nuages + grêle   
 
 #   Rien
 #   Pluie
