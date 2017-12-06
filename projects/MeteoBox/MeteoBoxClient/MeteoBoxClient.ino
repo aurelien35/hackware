@@ -76,6 +76,12 @@ void loop()
 	// Stop DisplayBoard
 	displayBoard.shutDown();
 	
+	// Stop all outputs
+	digitalWrite(MeteoBoxClient::PIN_IO_BOARD_POWER_ON,			LOW);
+	digitalWrite(MeteoBoxClient::PIN_DISPLAY_BOARD_POWER_ON,	LOW);
+	digitalWrite(MeteoBoxClient::PIN_WIFI_STATUS,				LOW);
+	digitalWrite(MeteoBoxClient::PIN_DATA_STATUS,				LOW);
+
 	// Stop ESP32
 	Serial.println("Shutdown...");
 	esp_deep_sleep_start();

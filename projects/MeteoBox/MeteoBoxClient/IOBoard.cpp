@@ -28,9 +28,9 @@ bool IOBoard::startUp()
 	// Test connexion and configuration
 	if (_mcp.exists() == true)
 	{
-		if (_mcp.setMode(MCP23017::PORT_A, MCP23017::INPUT_MODE) == true)
+		if (_mcp.setMode(MCP23017::PORT_B, MCP23017::INPUT_MODE) == true)
 		{
-			if (_mcp.setMode(MCP23017::PORT_B, MCP23017::OUTPUT_MODE) == true)
+			if (_mcp.setMode(MCP23017::PORT_A, MCP23017::OUTPUT_MODE) == true)
 			{
 				_isConnected = true;
 				Serial.println("IOBoard::startUp : ok !");
@@ -67,7 +67,7 @@ bool IOBoard::update()
 	}
 
 	// Read sensors
-	int newSensorsValues = _mcp.getGPIO(MCP23017::PORT_A);
+	int newSensorsValues = _mcp.getGPIO(MCP23017::PORT_B);
 	if (newSensorsValues < 0)
 	{
 		Serial.println("IOBoard::update : read values error");
@@ -76,7 +76,7 @@ bool IOBoard::update()
 	}
 	
 	// Write LEDS
-	if (_mcp.setGPIO(MCP23017::PORT_A, (uint8_t) newSensorsValues) == false)
+	if (_mcp.setGPIO(MCP23017::PORT_A, ~((uint8_t) newSensorsValues)) == false)
 	{
 		Serial.println("IOBoard::update : write values error");
 		_mcp.debugDump();

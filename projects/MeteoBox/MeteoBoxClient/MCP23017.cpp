@@ -22,7 +22,7 @@
  */
 #define MCP23017_checkAddress(address, error)   { if (address < 0x20 || address > 0x27) { Serial.println("MCP23017 : bad address value"); return error; } }
 #define MCP23017_checkPort(port, error)         { if (port!=0 && port!=1) { Serial.println("MCP23017 : bad port value"); return error; } }
-#define MCP23017_checkBit(bit, error)           { if (bit<0 || bit>7) { Serial.println("MCP23017 : bad bit value"); return error; } }
+#define MCP23017_checkBit(bit, error)           { if (bit<0 || bit>7) { Serial.println("MCP23017 : bad bit value"); Serial.println(bit); return error; } }
 
     
 MCP23017::MCP23017(uint8_t address)
@@ -161,7 +161,19 @@ bool MCP23017::setMode(MCP23017::Port port, MCP23017::PinMode mode, uint8_t bit)
 //
 bool MCP23017::setMode(MCP23017::Port port, MCP23017::PinMode mode) const
 {
-    return setMode(port, mode, 0xFF);
+    if (   (setMode(port, mode, 0) == true)
+		&& (setMode(port, mode, 1) == true)
+		&& (setMode(port, mode, 2) == true)
+		&& (setMode(port, mode, 3) == true)
+		&& (setMode(port, mode, 4) == true)
+		&& (setMode(port, mode, 5) == true)
+		&& (setMode(port, mode, 6) == true)
+		&& (setMode(port, mode, 7) == true) )
+	{
+		return true;
+	}
+
+	return false;
 }
 //
 int MCP23017::getGPIO(MCP23017::Port port, uint8_t bit) const

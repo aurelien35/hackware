@@ -13,10 +13,10 @@ class MeteoBoxClient
 public:
 	typedef enum
 	{
-		PIN_IO_BOARD_POWER_ON		= 13,
-		PIN_DISPLAY_BOARD_POWER_ON	= 14,
-		PIN_WIFI_STATUS  			= 15,
-		PIN_DATA_STATUS  			= 16,
+		PIN_IO_BOARD_POWER_ON		= 2,
+		PIN_DISPLAY_BOARD_POWER_ON	= 4,
+		PIN_WIFI_STATUS  			= 18,
+		PIN_DATA_STATUS  			= 19,
 		PIN_SDA						= 21,
 		PIN_SCL						= 22
 	} Pin;
