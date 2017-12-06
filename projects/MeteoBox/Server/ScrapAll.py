@@ -24,6 +24,7 @@
 # Nuit claire                   #   Soleil                    #   Rien
 # Risque de grêle				#   Soleil + nuages + grêle   #   Pluie
 
+#   Rien
 #   Soleil                    
 #   Soleil + nuages           
 #   Nuages                    
