@@ -1,40 +1,5 @@
 # -*- coding: utf-8 -*-
 
-# Ensoleillé                    #   Soleil                    #   Rien
-# Éclaircies                    #   Soleil + nuages           #   Rien
-# Très nuageux                  #   Nuages                    #   Rien
-# Brume                         #   Soleil + brume            #   Rien
-# Pluie                         #   Soleil + nuages           #   Pluie
-# Averses                       #   Soleil + nuages           #   Pluie
-# Rares averses                 #   Soleil + nuages           #   Petite pluie
-# Pluies éparses                #   Soleil + nuages           #   Petite pluie
-# Pluie forte                   #   Soleil + nuages + pluie   #   Pluie
-# Averses de neige              #   Soleil + nuages           #   Flocons
-# Averses orageuses             #   Soleil + nuages           #   Pluie et orage
-# Quelques flocons              #   Soleil                    #   Flocons
-# Neige                         #   Soleil + nuages           #   Flocons
-# Pluies orageuses              #   Soleil + nuages + pluie   #   Pluie et orage
-# Pluie et neige                #   Soleil + nuages + pluie   #   Flocons
-# Bancs de brouillard           #   Brume                     #   Rien
-# Brouillard givrant            #   Brume                     #   Verglas
-# Pluie verglaçante             #   Soleil + nuages + pluie   #   Verglas
-# Ciel voilé                    #   Soleil + brume            #   Rien
-# Nuit claire                   #   Soleil                    #   Rien
-
-
-#   Soleil                    
-#   Soleil + nuages           
-#   Nuages                    
-#   Soleil + brume            
-#   Soleil + nuages + pluie   
-
-#   Rien
-#   Pluie
-#   Petite pluie
-#   Flocons
-#   Pluie et orage
-#   Verglas
-
 from urllib2 import urlopen
 import bs4 as BeautifulSoup
 import json
