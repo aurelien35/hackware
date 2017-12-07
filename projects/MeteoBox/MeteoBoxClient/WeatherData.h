@@ -1,3 +1,5 @@
+/****************** UTF-8 Encoding Markér -- Do not remove ******************/
+
 #ifndef METEOBOX_WEATHERDATA_H
 #define METEOBOX_WEATHERDATA_H
 

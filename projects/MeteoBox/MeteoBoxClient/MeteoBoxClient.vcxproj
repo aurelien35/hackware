@@ -93,6 +93,7 @@
     </ClInclude>
     <ClInclude Include="MeteoBoxClient.h" />
     <ClInclude Include="WeatherData.h" />
+    <ClInclude Include="Servo.h" />
     <ClInclude Include="__vm\.MeteoBoxClient.vsarduino.h" />
   </ItemGroup>
   <ItemGroup>
@@ -100,6 +101,7 @@
     <ClCompile Include="IOBoard.cpp" />
     <ClCompile Include="MCP23017.cpp" />
     <ClCompile Include="WeatherData.cpp" />
+    <ClCompile Include="Servo.cpp" />
   </ItemGroup>
   <PropertyGroup>
     <DebuggerFlavor>VisualMicroDebugger</DebuggerFlavor>

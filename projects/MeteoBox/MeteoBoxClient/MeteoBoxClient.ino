@@ -1,3 +1,5 @@
+/****************** UTF-8 Encoding Markér -- Do not remove ******************/
+
 #include "MeteoBoxClient.h"
 #include "IOBoard.h"
 #include "DisplayBoard.h"
@@ -10,7 +12,9 @@ void setup()
 	pinMode(MeteoBoxClient::PIN_DISPLAY_BOARD_POWER_ON,	OUTPUT);
 	pinMode(MeteoBoxClient::PIN_WIFI_STATUS,			OUTPUT);
 	pinMode(MeteoBoxClient::PIN_DATA_STATUS,			OUTPUT);
-	esp_deep_sleep_enable_ext0_wakeup(GPIO_NUM_33, 1);
+
+	// Configure wake up
+	esp_sleep_enable_ext0_wakeup(GPIO_NUM_33, HIGH);
 
 	// Write default values
 	digitalWrite(MeteoBoxClient::PIN_IO_BOARD_POWER_ON,			LOW);

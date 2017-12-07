@@ -22,7 +22,7 @@
  */
 #define MCP23017_checkAddress(address, error)   { if (address < 0x20 || address > 0x27) { Serial.println("MCP23017 : bad address value"); return error; } }
 #define MCP23017_checkPort(port, error)         { if (port!=0 && port!=1) { Serial.println("MCP23017 : bad port value"); return error; } }
-#define MCP23017_checkBit(bit, error)           { if (bit<0 || bit>7) { Serial.println("MCP23017 : bad bit value"); Serial.println(bit); return error; } }
+#define MCP23017_checkBit(bit, error)           { if (bit>7) { Serial.println("MCP23017 : bad bit value"); Serial.println(bit); return error; } }
 
     
 MCP23017::MCP23017(uint8_t address)

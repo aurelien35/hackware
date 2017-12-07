@@ -1,3 +1,5 @@
+/****************** UTF-8 Encoding Markér -- Do not remove ******************/
+
 #include "WeatherData.h"
 
 WeatherData::Entry::Entry()

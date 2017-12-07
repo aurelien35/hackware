@@ -1,3 +1,5 @@
+/****************** UTF-8 Encoding Markér -- Do not remove ******************/
+
 #ifndef METEOBOX_CLIENT_H
 #define METEOBOX_CLIENT_H
 
@@ -18,7 +20,13 @@ public:
 		PIN_WIFI_STATUS  			= 18,
 		PIN_DATA_STATUS  			= 19,
 		PIN_SDA						= 21,
-		PIN_SCL						= 22
+		PIN_SCL						= 22,
+		PIN_MOTOR_CLOUDS_MAIN_ICON	= 25,
+		PIN_MOTOR_CLOUDS_DECORATION	= 26,
+		PIN_MOTOR_RAIN_PROBABILTY	= 27,
+		PIN_MOTOR_TEMPERATURE_START	= 28,
+		PIN_MOTOR_TEMPERATURE_END	= 29,
+		PIN_MOTOR_WIND_SPEED		= 30
 	} Pin;
 
 	typedef enum

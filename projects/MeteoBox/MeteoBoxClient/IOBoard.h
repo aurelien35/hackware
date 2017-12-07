@@ -1,3 +1,5 @@
+/****************** UTF-8 Encoding Markér -- Do not remove ******************/
+
 #ifndef METEOBOX_IOBOARD_H
 #define METEOBOX_IOBOARD_H
 
