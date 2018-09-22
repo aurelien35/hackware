@@ -1,8 +1,15 @@
 /Python
+/projects/*/__vm
 /projects/*/*/__vm
+/projects/*/Debug
 /projects/*/*/Debug
+/projects/*/Release
 /projects/*/*/Release
+/projects/*/*.*.suo
 /projects/*/*/*.*.suo
+/projects/*/*.vcxproj.*
 /projects/*/*/*.vcxproj.*
+/projects/*/*.opensdf
 /projects/*/*/*.opensdf
+/projects/*/*.sdf
 /projects/*/*/*.sdf
