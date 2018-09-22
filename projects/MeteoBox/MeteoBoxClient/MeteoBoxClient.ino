@@ -5,6 +5,10 @@
 #include "DisplayBoard.h"
 #include "WeatherData.h"
 
+
+#include "ESP32Servo.h"
+ESP32Servo				_servoTest;
+
 void setup()
 {
 	// Configure pins
@@ -26,10 +30,33 @@ void setup()
 	Serial.begin(9600);
 	while (!Serial);
 	Serial.println("Serial comunication started");
+
+	_servoTest.attach(MeteoBoxClient::PIN_MOTOR_CLOUDS_MAIN_ICON,   ESP32Servo::CHANNEL_NOT_ATTACHED, 0, 180);
 }
 
 void loop()
 {
+	Serial.println("0");
+	_servoTest.write(0);
+	delay(5000);
+
+	Serial.println("45");
+	_servoTest.write(45);
+	delay(5000);
+
+	Serial.println("90");
+	_servoTest.write(90);
+	delay(5000);
+
+	Serial.println("135");
+	_servoTest.write(135);
+	delay(5000);
+
+	Serial.println("170");
+	_servoTest.write(180);
+	delay(5000);
+
+/*
 	Serial.println("MeteoBox started");
 
 	IOBoard ioBoard;
@@ -89,6 +116,7 @@ void loop()
 	// Stop ESP32
 	Serial.println("Shutdown...");
 	esp_deep_sleep_start();
+	*/
 }
 
 

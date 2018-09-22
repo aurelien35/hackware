@@ -32,7 +32,11 @@
  
 void setup()
 {
-  Wire.begin();
+  pinMode(13, OUTPUT);
+  digitalWrite(13, HIGH);
+  delay(1000);
+
+  Wire.begin(21, 22);
  
   Serial.begin(9600);
   while (!Serial);             // Leonardo: wait for serial monitor
